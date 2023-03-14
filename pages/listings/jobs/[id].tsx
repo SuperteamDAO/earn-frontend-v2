@@ -40,6 +40,9 @@ const Jobs = () => {
       >
         <HStack w={['22rem', '22rem', 'full', 'full']}>
           <DetailDescription
+           description={
+            (listingInfo.data?.listing.description as string) ?? ''
+          }
             skills={
               JSON.parse(listingInfo.data?.listing.skills as string) ?? []
             }
