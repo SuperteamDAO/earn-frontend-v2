@@ -31,6 +31,7 @@ import { useStore } from 'zustand';
 import { TalentStore } from '../../store/talent';
 import { ConnectWalletModal } from '../modals/connectWalletModal';
 import toast from 'react-hot-toast';
+import { LoadingData } from '../modals/loadingData';
 
 interface Props {
   sponsors?: SponsorType[];
@@ -39,10 +40,16 @@ export const Navbar = ({ sponsors }: Props) => {
   const { setUserInfo } = userStore();
   const { setTalentInfo, talentInfo } = TalentStore();
   const router = useRouter();
+  const {
+    isOpen: loadingDataisOpen,
+    onOpen: loadingDataOnOpen,
+    onClose: loadingDataOnClose,
+  } = useDisclosure();
   const { connected, publicKey, wallet, connect, select, wallets } =
     useWallet();
   useEffect(() => {
     const makeUser = async () => {
+      loadingDataOnOpen();
       console.log(publicKey, connected);
 
       if (publicKey && connected) {
@@ -54,6 +61,7 @@ export const Navbar = ({ sponsors }: Props) => {
           await findTalent();
         }
       }
+      return loadingDataOnClose();
     };
     makeUser();
   }, [publicKey, connected]);
@@ -99,6 +107,9 @@ export const Navbar = ({ sponsors }: Props) => {
           isOpen={isOpen}
           onClose={onClose}
         />
+      )}
+      {loadingDataisOpen && (
+        <LoadingData isOpen={loadingDataisOpen} onClose={loadingDataOnClose} />
       )}
       <Container
         maxW={'full'}
